@@ -1,0 +1,18 @@
+const assert = require('node:assert/strict');
+const {parseTime, formatTime, calculate} = require('./calculator');
+assert.equal(parseTime('5:00'), 300);
+assert.equal(parseTime('1:10:00', true), 4200);
+for (const value of ['5:60', '', '-1:00', '1:2', 'abc']) assert.throws(() => parseTime(value));
+assert.throws(() => parseTime('1:60:00', true));
+const result = calculate(300, [240,180,240,300,240,120,240,240], 180, 4200);
+assert.equal(result.total, 4380);
+assert.equal(result.requiredPace, 277.5);
+assert.equal(result.speed, 12);
+assert.equal(result.difference, 180);
+assert.equal(result.splits[7] + result.roxzone, result.total);
+assert.equal(formatTime(4380), '1:13:00');
+assert.equal(formatTime(277.5), '4:38');
+assert.equal(calculate(300, Array(8).fill(300), 0, 2400).requiredPace, null);
+assert.throws(() => calculate(0, Array(8).fill(300), 0, 4200));
+assert.throws(() => calculate(300, [300], 0, 4200));
+console.log('Calculs vérifiés : formats, somme, objectif, cas impossible et validations.');
